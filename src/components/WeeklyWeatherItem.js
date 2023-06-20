@@ -1,9 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import {
-  convertFahrenheitToCelsius,
-  getDayOfWeek,
-} from '../utils/helpers';
+import { kelvinToCelsius, getDayOfWeek } from '../utils/helpers';
 
 import { weatherIcons } from '../utils/constants';
 
@@ -37,7 +34,7 @@ const WeeklyWeatherItem = ({ item, index }) => {
 
       <View style={styles.degreeContainer}>
         <Text style={styles.degreeText}>
-          {convertFahrenheitToCelsius(item?.temp?.day)}
+          {kelvinToCelsius(item?.temp?.day)}
         </Text>
         <Text style={styles.superscript}>o</Text>
       </View>

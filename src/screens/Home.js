@@ -12,20 +12,28 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
+import { useDispatch } from 'react-redux';
 
+import { openWeatherMapApiKey } from '../utils/constants';
 import DegreesText from '../components/DegreesText';
 import Divider from '../components/Divider';
 import WeeklyWeatherItem from '../components/WeeklyWeatherItem';
-import { convertFahrenheitToCelsius } from '../utils/helpers';
+import {
+  kelvinToCelsius,
+  getDistanceUsingGoogleMaps,
+} from '../utils/helpers';
 import {
   weatherBackgrounds,
   weatherBgImages,
 } from '../utils/constants';
-
-const openWeatherMapApiKey = 'ca05bc8175a67d7b5076562e664ba7c6';
+import {
+  saveCurrentLocation,
+  saveWeatherUpdates,
+} from '../store/AppSlice';
 
 const Home = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [weeklyForecast, setWeeklyForecast] = useState(null);
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -45,6 +53,16 @@ const Home = () => {
     const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${location?.coords.latitude}&lon=${location?.coords.longitude}&exclude=current,minutely,hourly&appid=${openWeatherMapApiKey}`;
     setLocation(location);
 
+    const locationName = await getDistanceUsingGoogleMaps(
+      location?.coords.latitude,
+      location?.coords.longitude
+    );
+
+    if (locationName) {
+      dispatch(saveWeatherUpdates(data));
+      setLocation({ ...location, locationName });
+    }
+
     const response = await fetch(url);
     const data = await response.json();
 
@@ -54,6 +72,7 @@ const Home = () => {
         'An error occurred while fetching the forecast.'
       );
     } else {
+      dispatch(saveCurrentLocation({ ...location, locationName }));
       setWeeklyForecast(data);
     }
   };
@@ -67,7 +86,7 @@ const Home = () => {
     if (bgColor) {
       return { backgroundColor: bgColor };
     } else {
-      return { backgroundColor: '#47AB2F' };
+      return { backgroundColor: '#628594' };
     }
   };
   const getWeatherUpdateBgImage = (weatherUpdate) => {
@@ -75,7 +94,7 @@ const Home = () => {
     if (bgImage) {
       return bgImage;
     } else {
-      return require('../../assets/Images/sea_rainy.png');
+      return require('../../assets/Images/sea_cloudy.png');
     }
   };
 
@@ -84,7 +103,7 @@ const Home = () => {
     if (bgColor) {
       return bgColor;
     } else {
-      return '#47AB2F';
+      return '#628594';
     }
   };
 
@@ -118,13 +137,23 @@ const Home = () => {
               alignItems: 'center',
             }}
           >
+            <View>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontWeight: '700',
+                  fontSize: 18,
+                  textAlign: 'center',
+                }}
+              >
+                {location?.locationName ? location?.locationName : ''}
+              </Text>
+            </View>
             <View style={styles.degreesContainer}>
               <Text style={styles.degreesText}>
                 {weeklyForecast
-                  ? convertFahrenheitToCelsius(
-                      weeklyForecast?.daily[0].temp.day
-                    )
-                  : ''}
+                  ? kelvinToCelsius(weeklyForecast?.daily[0].temp.day)
+                  : '0'}
               </Text>
               <Text style={styles.superscriptText}>o</Text>
             </View>
@@ -155,9 +184,7 @@ const Home = () => {
           <DegreesText
             degrees={
               weeklyForecast
-                ? convertFahrenheitToCelsius(
-                    weeklyForecast?.daily[0].temp.min
-                  )
+                ? kelvinToCelsius(weeklyForecast?.daily[0].temp.min)
                 : 0
             }
             measure="min"
@@ -165,9 +192,7 @@ const Home = () => {
           <DegreesText
             degrees={
               weeklyForecast
-                ? convertFahrenheitToCelsius(
-                    weeklyForecast?.daily[0].temp.day
-                  )
+                ? kelvinToCelsius(weeklyForecast?.daily[0].temp.day)
                 : 0
             }
             measure="current"
@@ -175,9 +200,7 @@ const Home = () => {
           <DegreesText
             degrees={
               weeklyForecast
-                ? convertFahrenheitToCelsius(
-                    weeklyForecast?.daily[0].temp.max
-                  )
+                ? kelvinToCelsius(weeklyForecast?.daily[0].temp.max)
                 : 0
             }
             measure="max"
@@ -230,9 +253,9 @@ const styles = StyleSheet.create({
   superscriptText: {
     color: '#ffff',
     fontSize: 20,
-    lineHeight: 10,
+    lineHeight: 20,
     marginLeft: 2,
-    marginBottom: 35,
+    marginBottom: 30,
     textAlignVertical: 'top',
   },
 });

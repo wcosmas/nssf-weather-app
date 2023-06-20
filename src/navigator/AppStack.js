@@ -4,6 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import CustomDrawer from '../components/CustomDrawer';
 import Home from '../screens/Home';
+import SavedLocations from '../screens/SavedLocations';
 
 const Drawer = createDrawerNavigator();
 
@@ -29,6 +30,21 @@ const AppStack = () => {
           headerShown: false,
           drawerIcon: ({ color }) => (
             <Ionicons name="home-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="LocationsScreen"
+        component={SavedLocations}
+        options={{
+          title: 'Saved Locations',
+          headerShown: false,
+          drawerIcon: ({ color }) => (
+            <Ionicons
+              name="location-outline"
+              size={22}
+              color={color}
+            />
           ),
         }}
       />

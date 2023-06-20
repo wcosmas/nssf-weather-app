@@ -13,3 +13,8 @@ export const weatherBgImages = {
   Clouds: require('../../assets/Images/sea_cloudy.png'),
   Rain: require('../../assets/Images/sea_rainy.png'),
 };
+
+export const googleApiKey = 'AIzaSyCkHKs60KgaEarEHiyE4v6OFtdCahDry4k';
+
+export const openWeatherMapApiKey =
+  'ca05bc8175a67d7b5076562e664ba7c6';

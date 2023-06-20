@@ -1,6 +1,9 @@
-export function convertFahrenheitToCelsius(fahrenheit) {
-  var celsius = Math.round(((fahrenheit - 32) * 5) / 9);
-  return celsius;
+import { googleApiKey } from './constants';
+
+export function kelvinToCelsius(kelvin) {
+  var celsius = kelvin - 273.15;
+  var roundedCelsius = Math.round(celsius);
+  return roundedCelsius;
 }
 
 export function getDayOfWeek(number) {
@@ -21,3 +24,13 @@ export function getDayOfWeek(number) {
   var dayOfWeek = daysOfWeek[targetDay.getDay()];
   return dayOfWeek;
 }
+
+export const getDistanceUsingGoogleMaps = async (lat, long) => {
+  const latlong = `${lat},${long}`;
+  let url = `https://maps.googleapis.com/maps/api/geocode/json?&latlng=${latlong}&key=${googleApiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (!data.results.length) return;
+  return data.results[0].formatted_address;
+};

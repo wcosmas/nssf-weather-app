@@ -1,19 +1,17 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Provider } from 'react-redux';
+import { store, persistor } from './src/store/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import Navigator from './src/navigator/Navigator';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Navigator />
-    </View>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <Navigator />
+      </PersistGate>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
