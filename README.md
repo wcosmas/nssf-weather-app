@@ -54,6 +54,7 @@ Navigation Drawer
 Favorite Locations
 ![favourites](https://github.com/wcosmas/nssf-weather-app/assets/37125096/e974c000-fbf5-49c8-a6f9-13e52857a3f4)
 Map
-![new_dra](https://github.com/wcosmas/nssf-weather-app/assets/37125096/6a2326d1-6a57-4cbb-9798-2fcb7a9118e5)
+![map](https://github.com/wcosmas/nssf-weather-app/assets/37125096/3a6aaf98-2570-4e9d-8cfc-8581935da917)
+
 
 
