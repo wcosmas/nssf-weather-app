@@ -5,7 +5,7 @@ const appSlice = createSlice({
   initialState: {
     currentLocation: null,
     locations: [],
-    weatherUpdates: [],
+    weatherUpdates: null,
   },
   reducers: {
     saveCurrentLocation(state, action) {

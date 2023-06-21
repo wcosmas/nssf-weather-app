@@ -40,6 +40,13 @@ const SavedLocations = () => {
         data={locations}
         keyExtractor={(item, index) => index.toString()}
         ItemSeparatorComponent={ItemSeparatorView}
+        ListEmptyComponent={
+          <View style={styles.noLocationsWrapper}>
+            <Text style={{ fontSize: 18 }}>
+              You have no saved favourite locations!!
+            </Text>
+          </View>
+        }
         renderItem={({ item, index }) => (
           <LocationItem
             item={item}
@@ -70,6 +77,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     flex: 1,
     textAlign: 'center',
+  },
+  noLocationsWrapper: {
+    marginTop: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

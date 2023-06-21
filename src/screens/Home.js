@@ -38,12 +38,15 @@ const Home = () => {
   const navigation = useNavigation();
   const toast = useToast();
   const dispatch = useDispatch();
-  const [weeklyForecast, setWeeklyForecast] = useState(null);
+  const { weatherUpdates } = useSelector((state) => state.app);
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const fetchWeeklyForecast = async () => {
-    setLoading(true);
+    if (!weatherUpdates) {
+      setLoading(true);
+    }
+
     const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${location?.coords.latitude}&lon=${location?.coords.longitude}&exclude=current,minutely,hourly&appid=${openWeatherMapApiKey}`;
     const response = await fetch(url);
     const data = await response.json();
@@ -55,7 +58,6 @@ const Home = () => {
         'An error occurred while fetching the forecast.'
       );
     } else {
-      setWeeklyForecast(data);
       dispatch(saveWeatherUpdates(data));
     }
   };
@@ -63,6 +65,7 @@ const Home = () => {
   useEffect(() => {
     checkLocationPermissions();
   }, []);
+
   useEffect(() => {
     if (location) {
       fetchWeeklyForecast();
@@ -130,13 +133,13 @@ const Home = () => {
     <View style={styles.container}>
       <StatusBar
         backgroundColor={getStatusBarColor(
-          weeklyForecast?.daily[0].weather[0].main
+          weatherUpdates?.daily[0]?.weather[0].main
         )}
       />
       <View style={styles.weatherContainer}>
         <ImageBackground
           source={getWeatherUpdateBgImage(
-            weeklyForecast?.daily[0].weather[0].main
+            weatherUpdates?.daily[0]?.weather[0].main
           )}
           style={{ height: '100%' }}
         >
@@ -178,15 +181,17 @@ const Home = () => {
             </View>
             <View style={styles.degreesContainer}>
               <Text style={styles.degreesText}>
-                {weeklyForecast
-                  ? kelvinToCelsius(weeklyForecast?.daily[0].temp.day)
+                {weatherUpdates
+                  ? kelvinToCelsius(
+                      weatherUpdates?.daily[0]?.temp.day
+                    )
                   : '0'}
               </Text>
               <Text style={styles.superscriptText}>o</Text>
             </View>
             <Text style={styles.degreesText}>
-              {weeklyForecast
-                ? weeklyForecast?.daily[0].weather[0].main
+              {weatherUpdates
+                ? weatherUpdates?.daily[0].weather[0].main
                 : ''}
             </Text>
           </View>
@@ -196,7 +201,7 @@ const Home = () => {
         style={[
           styles.weeklyUpdatesContainer,
           getWeatherUpdateBg(
-            weeklyForecast?.daily[0].weather[0].main
+            weatherUpdates?.daily[0]?.weather[0]?.main
           ),
         ]}
       >
@@ -210,24 +215,24 @@ const Home = () => {
         >
           <DegreesText
             degrees={
-              weeklyForecast
-                ? kelvinToCelsius(weeklyForecast?.daily[0].temp.min)
+              weatherUpdates
+                ? kelvinToCelsius(weatherUpdates?.daily[0]?.temp.min)
                 : 0
             }
             measure="min"
           />
           <DegreesText
             degrees={
-              weeklyForecast
-                ? kelvinToCelsius(weeklyForecast?.daily[0].temp.day)
+              weatherUpdates
+                ? kelvinToCelsius(weatherUpdates?.daily[0]?.temp.day)
                 : 0
             }
             measure="current"
           />
           <DegreesText
             degrees={
-              weeklyForecast
-                ? kelvinToCelsius(weeklyForecast?.daily[0].temp.max)
+              weatherUpdates
+                ? kelvinToCelsius(weatherUpdates?.daily[0]?.temp.max)
                 : 0
             }
             measure="max"
@@ -245,7 +250,7 @@ const Home = () => {
           <FlatList
             pagingEnabled={false}
             showsHorizontalScrollIndicator={false}
-            data={weeklyForecast?.daily.slice(1)}
+            data={weatherUpdates?.daily.slice(1)}
             renderItem={WeeklyWeatherItem}
             keyExtractor={(item, index) => index.toString()}
           />
