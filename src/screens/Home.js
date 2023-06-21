@@ -8,11 +8,13 @@ import {
   FlatList,
   Alert,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Tooltip, useToast } from 'native-base';
 
 import { openWeatherMapApiKey } from '../utils/constants';
 import DegreesText from '../components/DegreesText';
@@ -29,10 +31,12 @@ import {
 import {
   saveCurrentLocation,
   saveWeatherUpdates,
+  saveLocations,
 } from '../store/AppSlice';
 
 const Home = () => {
   const navigation = useNavigation();
+  const toast = useToast();
   const dispatch = useDispatch();
   const [weeklyForecast, setWeeklyForecast] = useState(null);
   const [location, setLocation] = useState(null);
@@ -40,46 +44,30 @@ const Home = () => {
 
   const fetchWeeklyForecast = async () => {
     setLoading(true);
-
-    let { status } =
-      await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Error', 'Location permission access was denied!!');
-      setLoading(false);
-      return;
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
     const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${location?.coords.latitude}&lon=${location?.coords.longitude}&exclude=current,minutely,hourly&appid=${openWeatherMapApiKey}`;
-    setLocation(location);
-
-    const locationName = await getDistanceUsingGoogleMaps(
-      location?.coords.latitude,
-      location?.coords.longitude
-    );
-
-    if (locationName) {
-      dispatch(saveWeatherUpdates(data));
-      setLocation({ ...location, locationName });
-    }
-
     const response = await fetch(url);
     const data = await response.json();
 
+    setLoading(false);
     if (!response.ok) {
       Alert.alert(
         'Error',
         'An error occurred while fetching the forecast.'
       );
     } else {
-      dispatch(saveCurrentLocation({ ...location, locationName }));
       setWeeklyForecast(data);
+      dispatch(saveWeatherUpdates(data));
     }
   };
 
   useEffect(() => {
-    fetchWeeklyForecast();
+    checkLocationPermissions();
   }, []);
+  useEffect(() => {
+    if (location) {
+      fetchWeeklyForecast();
+    }
+  }, [location]);
 
   const getWeatherUpdateBg = (weatherUpdate) => {
     let bgColor = weatherBackgrounds[weatherUpdate];
@@ -107,6 +95,36 @@ const Home = () => {
     }
   };
 
+  const checkLocationPermissions = async () => {
+    let { status } =
+      await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Error', 'Location permission access was denied!!');
+      setLoading(false);
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    setLocation(location);
+
+    const locationName = await getDistanceUsingGoogleMaps(
+      location?.coords.latitude,
+      location?.coords.longitude
+    );
+
+    if (locationName) {
+      setLocation({ ...location, locationName });
+      dispatch(saveCurrentLocation({ ...location, locationName }));
+    }
+  };
+
+  const saveLocation = () => {
+    dispatch(saveLocations(location));
+    toast.show({
+      description: 'Location Saved!!',
+    });
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar
@@ -129,7 +147,15 @@ const Home = () => {
                 <Feather name="menu" color="#fff" size={25} />
               </TouchableOpacity>
             </View>
+            <View style={styles.headerUpper}>
+              <Tooltip label="Save Location" openDelay={10}>
+                <TouchableOpacity onPress={saveLocation}>
+                  <Feather name="download" color="#fff" size={25} />
+                </TouchableOpacity>
+              </Tooltip>
+            </View>
           </View>
+
           <View
             style={{
               flex: 1,
@@ -207,7 +233,14 @@ const Home = () => {
           />
         </View>
         <Divider />
-        {weeklyForecast && (
+        {loading ? (
+          <View style={styles.loadingIndicator}>
+            <Text style={{ color: '#fff', fontSize: 19 }}>
+              Fetching Forecast...
+            </Text>
+            <ActivityIndicator color="#fff" />
+          </View>
+        ) : (
           <FlatList
             pagingEnabled={false}
             showsHorizontalScrollIndicator={false}
@@ -230,14 +263,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
   weeklyUpdatesContainer: {
-    flex: 3,
+    flex: 2.5,
   },
   header: {
-    flexDirection: 'column',
-  },
-  headerUpper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  headerUpper: {
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
@@ -257,6 +289,13 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     marginBottom: 30,
     textAlignVertical: 'top',
+  },
+  loadingIndicator: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+    marginBottom: 15,
   },
 });
 

@@ -57,7 +57,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   degreeText: {
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: '700',
     color: '#fff',
   },
   superscript: {

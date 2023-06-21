@@ -37,7 +37,7 @@ const AppStack = () => {
         name="LocationsScreen"
         component={SavedLocations}
         options={{
-          title: 'Saved Locations',
+          title: 'Favourite Locations',
           headerShown: false,
           drawerIcon: ({ color }) => (
             <Ionicons

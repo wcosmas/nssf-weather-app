@@ -5,7 +5,9 @@ const DegreesText = ({ degrees, measure }) => {
   return (
     <View style={styles.container}>
       <View style={styles.degreeContainer}>
-        <Text style={styles.text}>{degrees}</Text>
+        <Text style={[styles.text, { fontWeight: '700' }]}>
+          {degrees}
+        </Text>
         <Text style={styles.superscript}>o</Text>
       </View>
 
