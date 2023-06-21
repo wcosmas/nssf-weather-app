@@ -45,3 +45,13 @@ For Android:
 ```
 expo build:android
 ```
+
+### Screenshots
+Homepage
+![home](https://github.com/wcosmas/nssf-weather-app/assets/37125096/9096ecd6-af80-481c-b1be-9524d7132034)
+Navigation Drawer
+![drawer](https://github.com/wcosmas/nssf-weather-app/assets/37125096/8d3a4889-6449-41e0-8a0c-b858031e5f41)
+Favorite Locations
+![favourites](https://github.com/wcosmas/nssf-weather-app/assets/37125096/e974c000-fbf5-49c8-a6f9-13e52857a3f4)
+
+
