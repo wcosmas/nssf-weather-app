@@ -99,8 +99,10 @@ const Home = () => {
     let { status } =
       await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Error', 'Location permission access was denied!!');
-      setLoading(false);
+      Alert.alert(
+        'Error',
+        'Permission to access location was denied!!'
+      );
       return;
     }
 
@@ -111,7 +113,6 @@ const Home = () => {
       location?.coords.latitude,
       location?.coords.longitude
     );
-
     if (locationName) {
       setLocation({ ...location, locationName });
       dispatch(saveCurrentLocation({ ...location, locationName }));
