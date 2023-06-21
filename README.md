@@ -22,7 +22,7 @@ Make sure you have the following software installed:
 
 ### Povide Keys
 
-Please provide the `googleApiKey` and the  `openWeatherMapApiKey` for the Places API and the open weather map API.
+Please provide the `googleApiKey` and the  `openWeatherMapApiKey` in the `constants.js` file in the `utils` folder. The keys are for the Places API and the open weather map API.
 
 ### Running the App
 
