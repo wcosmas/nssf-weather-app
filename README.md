@@ -20,9 +20,13 @@ Make sure you have the following software installed:
 2. Navigate to the project directory: `cd your-app`
 3. Install dependencies: `npm install`
 
+### Povide Keys
+
+Please provide the `googleApiKey` and the  `openWeatherMapApiKey` for the Places API and the open weather map API.
+
 ### Running the App
 
-To run the app locally, use the following command:
+To run the app locally, use the following command: Incase you the weather data is not loaded, please refresh the app. Such issues are common while bundling the app
 
 ```
 expo start
@@ -47,6 +51,7 @@ expo build:android
 ```
 
 ### Screenshots
+
 Homepage
 ![home](https://github.com/wcosmas/nssf-weather-app/assets/37125096/9096ecd6-af80-481c-b1be-9524d7132034)
 Navigation Drawer
@@ -55,6 +60,3 @@ Favorite Locations
 ![favourites](https://github.com/wcosmas/nssf-weather-app/assets/37125096/e974c000-fbf5-49c8-a6f9-13e52857a3f4)
 Map
 ![map](https://github.com/wcosmas/nssf-weather-app/assets/37125096/3a6aaf98-2570-4e9d-8cfc-8581935da917)
-
-
-
