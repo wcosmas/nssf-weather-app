@@ -14,7 +14,6 @@ export const weatherBgImages = {
   Rain: require('../../assets/Images/sea_rainy.png'),
 };
 
-export const googleApiKey = 'AIzaSyCkHKs60KgaEarEHiyE4v6OFtdCahDry4k';
+export const googleApiKey = 'xxxxxxxxxxx';
 
-export const openWeatherMapApiKey =
-  'ca05bc8175a67d7b5076562e664ba7c6';
+export const openWeatherMapApiKey = 'xxxxxxx';
